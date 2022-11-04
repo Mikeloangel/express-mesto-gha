@@ -1,6 +1,4 @@
 module.exports.validateUrlObject = {
-  validate: {
-    validator: (v) => /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/.test(v),
-    message: props => `${props.value} не верный адрес!`
-  }
+  validator: (v) => /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi.test(v),
+  message: props => `${props.value} неверный адрес!`
 }

@@ -11,7 +11,7 @@ const cardSchema = mongoose.Schema({
   link: {
     type: String,
     required: [true, 'Должен быть валидный адрес'],
-    validateUrlObject,
+    validate: validateUrlObject,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

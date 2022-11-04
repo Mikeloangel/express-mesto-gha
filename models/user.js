@@ -17,7 +17,7 @@ const userSchema = mongoose.Schema({
   avatar: {
     type: String,
     required: [true, 'Должен быть валидный адрес'],
-    validateUrlObject
+    validate: validateUrlObject
   }
 });
 
