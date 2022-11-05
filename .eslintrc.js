@@ -1,17 +1,17 @@
 module.exports = {
-  "env": {
-    "node": true,
-    "commonjs": true,
-    "es2021": true
+  env: {
+    node: true,
+    commonjs: true,
+    es2021: true,
   },
-  "extends": ["eslint:recommended"],
-  "overrides": [
+  // "extends": ["eslint:recommended"],
+  extends: ['airbnb-base'],
+  overrides: [
   ],
-  "parserOptions": {
-    "ecmaVersion": "latest"
+  parserOptions: {
+    ecmaVersion: 'latest',
   },
-  "rules": {
-    // "no-underscore-dangle": ["error", { "allow": ["_place"] }],
-    "no-underscore-dangle": ["error", { "allow": ["_id"] }]
+  rules: {
+    'no-underscore-dangle': ['error', { allow: ['_id'] }],
   },
-}
+};

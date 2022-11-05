@@ -17,8 +17,8 @@ const userSchema = mongoose.Schema({
   avatar: {
     type: String,
     required: [true, 'Должен быть валидный адрес'],
-    validate: validateUrlObject
-  }
+    validate: validateUrlObject,
+  },
 });
 
 module.exports = mongoose.model('user', userSchema);

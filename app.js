@@ -13,14 +13,14 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 const app = express();
 
-/** TEMPORAL HARDCODE START*/
+/** TEMPORAL HARDCODE START */
 
 // user id injection
 app.use(tempUserInjection);
 
-/** TEMPORAL HARDCODE END*/
+/** TEMPORAL HARDCODE END */
 
-//body parsers
+// body parsers
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -31,6 +31,8 @@ app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
 
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log(`Server started at port ${PORT}`);
-  console.log(`Welcome to Mesto backend API`);
+  // eslint-disable-next-line no-console
+  console.log('Welcome to Mesto backend API');
 });
