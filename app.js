@@ -16,7 +16,15 @@ const app = express();
 /** TEMPORAL HARDCODE START */
 
 // user id injection
-app.use(tempUserInjection);
+// app.use(tempUserInjection);
+// auto test requirement
+app.use((req, res, next) => {
+  req.user = {
+    _id: '6365ffa7604cf3bcbf92b59c',
+  };
+
+  next();
+});
 
 /** TEMPORAL HARDCODE END */
 
