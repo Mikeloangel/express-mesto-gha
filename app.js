@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-const { logger, tempUserInjection } = require('./middleware');
+const { logger } = require('./middleware');
 
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
