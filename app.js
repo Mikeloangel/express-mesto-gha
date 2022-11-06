@@ -40,6 +40,11 @@ app.use(handleSyntaxErrorInJSON);
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
 
+// handle 404
+app.all('*', (req, res) => {
+  res.status(404).send({});
+});
+
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`Server started at port ${PORT}`);
