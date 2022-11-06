@@ -42,7 +42,7 @@ app.use('/cards', cardsRoutes);
 
 // handle 404
 app.all('*', (req, res) => {
-  res.status(404).send({});
+  res.status(404).send({ message: '404' });
 });
 
 app.listen(PORT, () => {
