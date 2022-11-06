@@ -35,8 +35,12 @@ module.exports.deleteCard = (req, res) => {
         res.status(200).send({ message: 'ok' });
       }
     })
-    .catch(() => {
-      res.status(500).send({ message: 'Произошла ошибка' });
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные при обновлении карточки.' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
     });
 };
 
@@ -50,12 +54,12 @@ module.exports.putLike = (req, res) => {
       if (updatedCard === null) {
         res.status(404).send({ message: 'Передан несуществующий _id карточки. ' });
       } else {
-        res.status(201).send(updatedCard);
+        res.status(200).send(updatedCard);
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные при обновлении карточки.' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
@@ -72,12 +76,12 @@ module.exports.deleteLike = (req, res) => {
       if (updatedCard === null) {
         res.status(404).send({ message: 'Передан несуществующий _id карточки. ' });
       } else {
-        res.status(201).send(updatedCard);
+        res.status(200).send(updatedCard);
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные при обновлении карточки.' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
