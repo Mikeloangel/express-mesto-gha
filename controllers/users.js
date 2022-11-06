@@ -1,41 +1,37 @@
 const User = require('../models/user');
 
-// const ERROR_CODE = 400;
-// const ERROR_NOTFOUND = 404;
-// const DEFAULT_ERROR = 500;
-// const RES_OK = 200;
-// const RES_OK_CREATED = 201;
+const ERROR_CODE = 400;
+const ERROR_NOTFOUND = 404;
+const DEFAULT_ERROR = 500;
 
 // get all users from Db
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' }));
 };
 
 // get user by id from Db
-// returns user JSON
 module.exports.getUserById = (req, res) => {
   const { userId } = req.params;
   User.findOne({ _id: userId })
     .then((user) => {
       if (user === null) {
-        res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+        res.status(ERROR_NOTFOUND).send({ message: 'Пользователь по указанному _id не найден' });
       } else {
         res.status(200).send(user);
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Неверный формат _id' });
+        res.status(ERROR_CODE).send({ message: 'Неверный формат _id' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
 
 // creates user in Db
-// returns new user JSON
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
@@ -45,9 +41,9 @@ module.exports.createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' });
+        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при создании пользователя.' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -61,9 +57,9 @@ module.exports.updateUserInfo = (req, res) => {
     .then((updatedUser) => res.send(updatedUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
+        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -77,9 +73,9 @@ module.exports.updateUserAvatar = (req, res) => {
     .then((updatedUser) => res.send(updatedUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
+        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };

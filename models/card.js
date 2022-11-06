@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const { validateUrlObject } = require('../utils/utils');
 
 const cardSchema = mongoose.Schema({

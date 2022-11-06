@@ -1,6 +1,20 @@
 [![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)
 # Проект Mesto фронтенд + бэкенд
 
+## Описание
+
+Backend API для проекта Mesto
+
+## Использованные технологии
+
+* Node.js
+* Express.js
+* Javascript
+* Eslint
+* Postman
+
+## Ссылка на Git Hub
+[GitHub](https://github.com/Mikeloangel/express-mesto-gha)
 
 ## Директории
 
