@@ -31,7 +31,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // logger
-app.use(logger);
+if (process.env.DEV) {
+  app.use(logger);
+}
 
 // prevent crush on invalid incoming data
 app.use(handleSyntaxErrorInJSON);
