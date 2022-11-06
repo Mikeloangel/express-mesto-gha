@@ -14,7 +14,13 @@ module.exports.addCard = (req, res) => {
 
   Cards.create({ name, link, owner: _id })
     .then((card) => res.send(card))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
 
 // delete card by Id in param
@@ -22,8 +28,16 @@ module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
 
   Cards.deleteOne({ _id: cardId })
-    .then(() => res.send({ result: 'ok' }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((answer) => {
+      if (answer.deletedCount === 0) {
+        res.status(404).send({ message: 'Карточка с указанным _id не найдена.' });
+      } else {
+        res.status(200).send({ message: 'ok' });
+      }
+    })
+    .catch(() => {
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
 // puts like to card by cardId in param
@@ -32,8 +46,20 @@ module.exports.putLike = (req, res) => {
   const { cardId } = req.params;
 
   Cards.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
-    .then((updatedCard) => res.send(updatedCard))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((updatedCard) => {
+      if (updatedCard === null) {
+        res.status(404).send({ message: 'Передан несуществующий _id карточки. ' });
+      } else {
+        res.status(201).send(updatedCard);
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
 
 // deletes like to card by cardId in param
@@ -42,6 +68,18 @@ module.exports.deleteLike = (req, res) => {
   const { cardId } = req.params;
 
   Cards.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
-    .then((updatedCard) => res.send(updatedCard))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((updatedCard) => {
+      if (updatedCard === null) {
+        res.status(404).send({ message: 'Передан несуществующий _id карточки. ' });
+      } else {
+        res.status(201).send(updatedCard);
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
 };

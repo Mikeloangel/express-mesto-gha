@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-const { logger } = require('./middleware');
+const { logger, handleSyntaxErrorInJSON } = require('./middleware');
 
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
@@ -15,9 +15,7 @@ const app = express();
 
 /** TEMPORAL HARDCODE START */
 
-// user id injection
-// app.use(tempUserInjection);
-// auto test requirement
+// middleware to inject user _id
 app.use((req, res, next) => {
   req.user = {
     _id: '6365ffa7604cf3bcbf92b59c',
@@ -32,9 +30,13 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// app.use(disableCache);
+// logger
 app.use(logger);
 
+// prevent crush on invalid incoming data
+app.use(handleSyntaxErrorInJSON);
+
+// routes
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
 

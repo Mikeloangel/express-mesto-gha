@@ -25,10 +25,9 @@ module.exports.logger = (req, res, next) => {
   next();
 };
 
-module.exports.tempUserInjection = (req, res, next) => {
-  req.user = {
-    _id: '6365ffa7604cf3bcbf92b59c',
-  };
-
-  next();
+// hadles syntax error in arriving JSON and stops
+// execution flow with no next call
+// eslint-disable-next-line no-unused-vars
+module.exports.handleSyntaxErrorInJSON = (err, req, res, next) => {
+  res.status(400).send({ message: 'Ошибка во входящем JSON' });
 };
