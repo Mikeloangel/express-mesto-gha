@@ -7,7 +7,7 @@ const { logger, handleSyntaxErrorInJSON } = require('./middleware');
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, DEV = false } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
@@ -31,7 +31,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // logger
-if (process.env.DEV) {
+if (DEV) {
   app.use(logger);
 }
 
