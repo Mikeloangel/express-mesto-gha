@@ -1,8 +1,21 @@
 const mongoose = require('mongoose');
-
-const { validateUrlObject } = require('../utils/utils');
+const isEmail = require('validator/lib/isEmail');
+const isURL = require('validator/lib/isURL');
 
 const userSchema = mongoose.Schema({
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+    validate: {
+      validator: (v) => isEmail(v),
+      message: (props) => `${props.value} неверный email!`,
+    },
+  },
+  password: {
+    type: String,
+    required: true,
+  },
   name: {
     type: String,
     minlength: 2,
@@ -18,7 +31,10 @@ const userSchema = mongoose.Schema({
   avatar: {
     type: String,
     required: [true, 'Должен быть валидный адрес'],
-    validate: validateUrlObject,
+    validate: {
+      validator: (v) => isURL(v),
+      message: (props) => `${props.value} неверный адрес!`,
+    }
   },
 });
 
