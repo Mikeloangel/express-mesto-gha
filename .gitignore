@@ -14,5 +14,8 @@ node_modules
 .idea
 .vscode
 
+# Enviroment prod
+.env
+
 #tmp folder
 temp

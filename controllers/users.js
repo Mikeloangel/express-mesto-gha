@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const { ERROR_CODE = 400, ERROR_NOTFOUND = 404, DEFAULT_ERROR = 500 } = require('../utils/errorCodes');
 const user = require('../models/user');
@@ -92,3 +93,36 @@ module.exports.updateUserAvatar = (req, res) => {
       }
     });
 };
+
+// logs user in and sends JWT back
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  const { NODE_ENV, JWT_SECRET } = process.env;
+
+  User.findUserByCredentials({ email, password })
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV ? JWT_SECRET : 'dev',
+        { expiresIn: '7d' }
+      );
+      res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true });
+      // res.send({ token });
+      res.send({message: 'ok'});
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(401).send({ message: err })
+    })
+
+  // User.findOne({ email })
+  //   .orFail()
+  //   .then((user) => bcrypt.compare(req.body.password, user.password))
+  //   .then((isMatched) => {
+  //     if (!isMatched) return Promise.reject('not found');
+  //     res.send({ message: 'ok!' })
+  //   })
+  //   .catch((err) => {
+  //     res.status(401).send({ message: err })
+  //   })
+}
