@@ -1,34 +1,35 @@
 require('dotenv').config();
+const { PORT = 3000, DEV = false } = process.env;
 
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
+const { auth } = require('./middlewares/auth');
 const { logger, handleSyntaxErrorInJSON } = require('./middleware');
 
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 
-const { PORT = 3000, DEV = false } = process.env;
-
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 const app = express();
 
+// cookie parser
 app.use(cookieParser());
 
 /** TEMPORAL HARDCODE START */
 
 // middleware to inject user _id
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6365ffa7604cf3bcbf92b59c',
-  };
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '6365ffa7604cf3bcbf92b59c',
+//   };
 
-  next();
-});
+//   next();
+// });
 
 /** TEMPORAL HARDCODE END */
 
@@ -44,12 +45,15 @@ if (DEV) {
 // prevent crush on invalid incoming data
 app.use(handleSyntaxErrorInJSON);
 
+app.post('/signin', login);
+app.post('/signup', createUser);
+
+// protects next routes
+app.use(auth);
+
 // routes
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
-
-app.post('/signin', login);
-app.post('/signup', createUser);
 
 // handle 404
 app.all('*', (req, res) => {

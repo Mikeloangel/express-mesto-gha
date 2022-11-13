@@ -115,3 +115,5 @@ module.exports.login = (req, res) => {
       res.status(401).send({ message: err })
     })
 }
+
+// gets current user info
