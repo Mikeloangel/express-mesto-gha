@@ -117,3 +117,13 @@ module.exports.login = (req, res) => {
 }
 
 // gets current user info
+module.exports.getUserMe = (req, res) => {
+  User.findById(req.user)
+    .orFail()
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    })
+}

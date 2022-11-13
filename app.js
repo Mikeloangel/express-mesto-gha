@@ -20,19 +20,6 @@ const app = express();
 // cookie parser
 app.use(cookieParser());
 
-/** TEMPORAL HARDCODE START */
-
-// middleware to inject user _id
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '6365ffa7604cf3bcbf92b59c',
-//   };
-
-//   next();
-// });
-
-/** TEMPORAL HARDCODE END */
-
 // body parsers
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -48,12 +35,9 @@ app.use(handleSyntaxErrorInJSON);
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-// protects next routes
-app.use(auth);
-
-// routes
-app.use('/users', usersRoutes);
-app.use('/cards', cardsRoutes);
+// protected routes
+app.use('/users', auth, usersRoutes);
+app.use('/cards', auth, cardsRoutes);
 
 // handle 404
 app.all('*', (req, res) => {

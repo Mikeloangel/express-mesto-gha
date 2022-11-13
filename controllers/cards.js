@@ -28,21 +28,31 @@ module.exports.addCard = (req, res) => {
 // delete card by Id in param
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
+  const { user } = req;
 
-  Cards.deleteOne({ _id: cardId })
+  Cards.findOne({ _id: cardId, owner: user })
     .orFail()
     .then(() => {
-      res.status(200).send({ message: 'ok' });
+      Cards.deleteOne({ _id: cardId })
+        .orFail()
+        .then(() => {
+          res.status(200).send({ message: 'ok' });
+        })
+        .catch((err) => {
+          if (err.name === 'CastError') {
+            res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении карточки.' });
+          } else if (err.name === 'DocumentNotFoundError') {
+            res.status(ERROR_NOTFOUND).send({ message: 'Карточка с указанным _id не найдена.' });
+          } else {
+            res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
+          }
+        });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении карточки.' });
-      } else if (err.name === 'DocumentNotFoundError') {
-        res.status(ERROR_NOTFOUND).send({ message: 'Карточка с указанным _id не найдена.' });
-      } else {
-        res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
-      }
-    });
+      res.status(401).send(err);
+    })
+  return;
+
 };
 
 // puts like to card by cardId in param
