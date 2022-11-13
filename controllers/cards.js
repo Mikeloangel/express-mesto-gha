@@ -50,9 +50,7 @@ module.exports.deleteCard = (req, res) => {
     })
     .catch((err) => {
       res.status(401).send(err);
-    })
-  return;
-
+    });
 };
 
 // puts like to card by cardId in param

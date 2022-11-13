@@ -16,7 +16,7 @@ const userSchema = mongoose.Schema({
   password: {
     type: String,
     required: true,
-    select: false
+    select: false,
   },
   name: {
     type: String,
@@ -36,26 +36,27 @@ const userSchema = mongoose.Schema({
     validate: {
       validator: (v) => isURL(v),
       message: (props) => `${props.value} неверный адрес!`,
-    }
+    },
   },
 });
 
 // finds user returns user data of reject promise
+// eslint-disable-next-line func-names
 userSchema.statics.findUserByCredentials = function ({ email, password }) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject('not user');
+        return Promise.reject(new Error('not user'));
       }
 
       return bcrypt.compare(password, user.password)
         .then((isMatched) => {
           if (!isMatched) {
-            return Promise.reject('not matched')
+            return Promise.reject(new Error('not matched'));
           }
           return Promise.resolve(user);
-        })
-    })
-}
+        });
+    });
+};
 
 module.exports = mongoose.model('user', userSchema);

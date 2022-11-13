@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app",
-    "dev": "DEV=true nodemon app",
+    "dev": " nodemon app",
     "lint": "npx eslint ."
   },
   "repository": {

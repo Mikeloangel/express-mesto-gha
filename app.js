@@ -1,5 +1,6 @@
 require('dotenv').config();
-const { PORT = 3000, DEV = false } = process.env;
+
+const { PORT = 3000 } = process.env;
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -7,7 +8,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 const { auth } = require('./middlewares/auth');
-const { logger, handleSyntaxErrorInJSON } = require('./middleware');
+const { handleSyntaxErrorInJSON } = require('./middlewares/handleSyntaxErrorInJSON');
 
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
@@ -23,11 +24,6 @@ app.use(cookieParser());
 // body parsers
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// logger
-if (DEV) {
-  app.use(logger);
-}
 
 // prevent crush on invalid incoming data
 app.use(handleSyntaxErrorInJSON);

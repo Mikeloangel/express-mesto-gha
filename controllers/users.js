@@ -1,9 +1,8 @@
-const User = require('../models/user');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
+const User = require('../models/user');
 const { ERROR_CODE = 400, ERROR_NOTFOUND = 404, DEFAULT_ERROR = 500 } = require('../utils/errorCodes');
-const user = require('../models/user');
 
 // get all users from Db
 module.exports.getUsers = (req, res) => {
@@ -41,7 +40,9 @@ module.exports.createUser = (req, res) => {
   } = req.body;
 
   bcrypt.hash(password, 10)
-    .then((hashedPassword) => User.create({ name, about, avatar, email, password: hashedPassword }))
+    .then((hashedPassword) => User.create({
+      name, about, avatar, email, password: hashedPassword,
+    }))
     .then((user) => res.status(201).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -50,16 +51,6 @@ module.exports.createUser = (req, res) => {
         res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
-
-  // User.create({ name, about, avatar, email, password })
-  //   .then((user) => res.status(201).send(user))
-  //   .catch((err) => {
-  //     if (err.name === 'ValidationError') {
-  //       res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при создании пользователя.' });
-  //     } else {
-  //       res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
-  //     }
-  //   });
 };
 
 // patches user info {name, about}
@@ -104,7 +95,7 @@ module.exports.login = (req, res) => {
       const token = jwt.sign(
         { _id: user._id },
         NODE_ENV ? JWT_SECRET : 'dev',
-        { expiresIn: '7d' }
+        { expiresIn: '7d' },
       );
       res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true });
       // res.send({ token });
@@ -112,9 +103,9 @@ module.exports.login = (req, res) => {
     })
     .catch((err) => {
       res.cookie('jwt', '', { maxAge: 3600000 * 24 * 7, httpOnly: true });
-      res.status(401).send({ message: err })
-    })
-}
+      res.status(401).send({ message: err });
+    });
+};
 
 // gets current user info
 module.exports.getUserMe = (req, res) => {
@@ -125,5 +116,5 @@ module.exports.getUserMe = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send(err);
-    })
-}
+    });
+};
