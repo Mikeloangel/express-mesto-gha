@@ -108,21 +108,10 @@ module.exports.login = (req, res) => {
       );
       res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true });
       // res.send({ token });
-      res.send({message: 'ok'});
+      res.send({ message: 'ok' });
     })
     .catch((err) => {
-      console.log(err)
+      res.cookie('jwt', '', { maxAge: 3600000 * 24 * 7, httpOnly: true });
       res.status(401).send({ message: err })
     })
-
-  // User.findOne({ email })
-  //   .orFail()
-  //   .then((user) => bcrypt.compare(req.body.password, user.password))
-  //   .then((isMatched) => {
-  //     if (!isMatched) return Promise.reject('not found');
-  //     res.send({ message: 'ok!' })
-  //   })
-  //   .catch((err) => {
-  //     res.status(401).send({ message: err })
-  //   })
 }

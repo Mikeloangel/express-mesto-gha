@@ -39,6 +39,7 @@ const userSchema = mongoose.Schema({
   },
 });
 
+// finds user returns user data of reject promise
 userSchema.statics.findUserByCredentials = function ({ email, password }) {
   return this.findOne({ email })
     .then((user) => {

@@ -9,6 +9,7 @@ const { logger, handleSyntaxErrorInJSON } = require('./middleware');
 
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
+const { login, createUser } = require('./controllers/users');
 
 const { PORT = 3000, DEV = false } = process.env;
 
@@ -46,6 +47,9 @@ app.use(handleSyntaxErrorInJSON);
 // routes
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
+
+app.post('/signin', login);
+app.post('/signup', createUser);
 
 // handle 404
 app.all('*', (req, res) => {
