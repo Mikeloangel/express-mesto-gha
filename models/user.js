@@ -36,7 +36,7 @@ const userSchema = mongoose.Schema({
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
-      validator: (v) => /^((https?:)(\/\/\/?)([\w]*(?::[\w]*)?@)?([\d\w\.-]+)(?::(\d+))?)?([\/\\\w\.()-]*)?(?:([?][^#]*)?(#.*)?)*/gmi.test(v),
+      validator: (v) => /(https?:\/\/)([a-z0-9/./_/-]*)()/gmi.test(v),
       message: (props) => `${props.value} неверный адрес!`,
     },
   },
