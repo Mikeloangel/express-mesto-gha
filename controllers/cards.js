@@ -1,7 +1,7 @@
 const Cards = require('../models/card');
 
 const WrongDataError = require('../errors/wrong-data-error');
-const CardNotFound = require('../errors/card-not-found-error');
+const ResourceNotFoundError = require('../errors/not-found-error');
 
 // get all cards
 module.exports.getCards = (req, res, next) => {
@@ -43,7 +43,7 @@ module.exports.deleteCard = (req, res, next) => {
           if (err.name === 'CastError') {
             next(new WrongDataError());
           } else if (err.name === 'DocumentNotFoundError') {
-            next(new CardNotFound())
+            next(new ResourceNotFoundError())
           } else {
             next(err);
           }
@@ -68,7 +68,7 @@ module.exports.putLike = (req, res, next) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new WrongDataError());
       } else if (err.name === 'DocumentNotFoundError') {
-        next(new CardNotFound());
+        next(new ResourceNotFoundError());
       } else {
         next(err);
       }
@@ -89,7 +89,7 @@ module.exports.deleteLike = (req, res, next) => {
       if (err.name === 'CastError') {
         next(new WrongDataError());
       } else if (err.name === 'DocumentNotFoundError') {
-        next(new CardNotFound());
+        next(new ResourceNotFoundError());
       } else {
         next(err);
       }

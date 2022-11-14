@@ -3,7 +3,7 @@ const isEmail = require('validator/lib/isEmail');
 const isURL = require('validator/lib/isURL');
 const bcrypt = require('bcryptjs');
 
-const UserNotFoundError = require('../errors/user-not-found-error');
+const ResourceNotFoundError = require('../errors/not-found-error');
 
 const userSchema = mongoose.Schema({
   email: {
@@ -36,7 +36,7 @@ const userSchema = mongoose.Schema({
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
-      validator: (v) => isURL(v),
+      validator: (v) => /^((https?:)(\/\/\/?)([\w]*(?::[\w]*)?@)?([\d\w\.-]+)(?::(\d+))?)?([\/\\\w\.()-]*)?(?:([?][^#]*)?(#.*)?)*/gmi.test(v),
       message: (props) => `${props.value} неверный адрес!`,
     },
   },
@@ -48,13 +48,13 @@ userSchema.statics.findUserByCredentials = function ({ email, password }) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new UserNotFoundError('Неверные логин или пароль'));
+        return Promise.reject(new ResourceNotFoundError('Неверные логин или пароль'));
       }
 
       return bcrypt.compare(password, user.password)
         .then((isMatched) => {
           if (!isMatched) {
-            return Promise.reject(new UserNotFoundError('Неверные логин или пароль'));
+            return Promise.reject(new ResourceNotFoundError('Неверные логин или пароль'));
           }
           return Promise.resolve(user);
         });

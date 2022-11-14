@@ -5,7 +5,7 @@ const User = require('../models/user');
 
 const UserExistsError = require('../errors/user-exists-error');
 const WrongDataError = require('../errors/wrong-data-error');
-const UserNotFoundError = require('../errors/user-not-found-error');
+const ResourceNotFoundError = require('../errors/not-found-error');
 
 // get all users from Db
 module.exports.getUsers = (req, res, next) => {
@@ -24,7 +24,7 @@ module.exports.getUserById = (req, res, next) => {
     .catch((err) => {
       const responceError = {
         'CastError': new WrongDataError(),
-        'DocumentNotFoundError': new UserNotFoundError(),
+        'DocumentNotFoundError': new ResourceNotFoundError(),
       };
 
       next(responceError[err.name] || err);
