@@ -10,11 +10,11 @@ const { errors, Joi, celebrate } = require('celebrate');
 
 const { auth } = require('./middlewares/auth');
 const { handleErrors } = require('./middlewares/handleErrors');
-// const { handleSyntaxErrorInJSON } = require('./middlewares/handleSyntaxErrorInJSON');
 
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
+
 const ResourceNotFoundError = require('./errors/not-found-error');
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
@@ -28,9 +28,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// prevent crush on invalid incoming data
-// app.use(handleSyntaxErrorInJSON);
-
+// signin / signup routes
 app.post(
   '/signin',
   celebrate({
