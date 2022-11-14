@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const TokenError = require('../errors/token-error')
 
 module.exports.auth = (req, res, next) => {
   const { NODE_ENV, JWT_SECRET } = process.env;
@@ -8,6 +9,6 @@ module.exports.auth = (req, res, next) => {
     req.user = payload;
     next();
   } catch (e) {
-    res.status(401).send({ message: 'token not found' });
+    next(new TokenError('Что-то не так с токеном'));
   }
 };

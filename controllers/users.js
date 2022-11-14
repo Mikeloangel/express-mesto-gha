@@ -2,35 +2,37 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
-const { ERROR_CODE = 400, ERROR_NOTFOUND = 404, DEFAULT_ERROR = 500 } = require('../utils/errorCodes');
+
+const UserExistsError = require('../errors/user-exists-error');
+const WrongDataError = require('../errors/wrong-data-error');
+const UserNotFoundError = require('../errors/user-not-found-error');
 
 // get all users from Db
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send(users))
-    .catch(() => res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' }));
+    .catch(next);
 };
 
 // get user by id from Db
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   const { userId } = req.params;
 
   User.findOne({ _id: userId })
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(ERROR_CODE).send({ message: 'Неверный формат _id' });
-      } else if (err.name === 'DocumentNotFoundError') {
-        res.status(ERROR_NOTFOUND).send({ message: 'Пользователь по указанному _id не найден' });
-      } else {
-        res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
-      }
+      const responceError = {
+        'CastError': new WrongDataError(),
+        'DocumentNotFoundError': new UserNotFoundError(),
+      };
+
+      next(responceError[err.name] || err);
     });
 };
 
 // creates user in Db
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name,
     about,
@@ -45,16 +47,20 @@ module.exports.createUser = (req, res) => {
     }))
     .then((user) => res.status(201).send(user))
     .catch((err) => {
+      if (err.code === 11000) {
+        next(new UserExistsError());
+        return;
+      }
       if (err.name === 'ValidationError') {
-        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при создании пользователя.' });
+        next(new WrongDataError());
       } else {
-        res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
+        next(err);
       }
     });
 };
 
 // patches user info {name, about}
-module.exports.updateUserInfo = (req, res) => {
+module.exports.updateUserInfo = (req, res, next) => {
   const { _id } = req.user;
   const { name, about } = req.body;
 
@@ -62,15 +68,15 @@ module.exports.updateUserInfo = (req, res) => {
     .then((updatedUser) => res.send(updatedUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
+        next(new WrongDataError());
       } else {
-        res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
+        next(err);
       }
     });
 };
 
 // patches user avatar {avatar}
-module.exports.updateUserAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   const { _id } = req.user;
   const { avatar } = req.body;
 
@@ -78,15 +84,15 @@ module.exports.updateUserAvatar = (req, res) => {
     .then((updatedUser) => res.send(updatedUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
+        next(new WrongDataError());
       } else {
-        res.status(DEFAULT_ERROR).send({ message: 'Произошла ошибка' });
+        next(err);
       }
     });
 };
 
 // logs user in and sends JWT back
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -98,23 +104,20 @@ module.exports.login = (req, res) => {
         { expiresIn: '7d' },
       );
       res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true });
-      // res.send({ token });
       res.send({ message: 'ok' });
     })
     .catch((err) => {
-      res.cookie('jwt', '', { maxAge: 3600000 * 24 * 7, httpOnly: true });
-      res.status(401).send({ message: err });
+      res.clearCookie('jwt');
+      next(err);
     });
 };
 
 // gets current user info
-module.exports.getUserMe = (req, res) => {
+module.exports.getUserMe = (req, res, next) => {
   User.findById(req.user)
     .orFail()
     .then((user) => {
       res.status(200).send(user);
     })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
+    .catch(next);
 };

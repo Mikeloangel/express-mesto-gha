@@ -8,7 +8,8 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 const { auth } = require('./middlewares/auth');
-const { handleSyntaxErrorInJSON } = require('./middlewares/handleSyntaxErrorInJSON');
+const { handleErrors } = require('./middlewares/handleErrors');
+// const { handleSyntaxErrorInJSON } = require('./middlewares/handleSyntaxErrorInJSON');
 
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
@@ -26,7 +27,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // prevent crush on invalid incoming data
-app.use(handleSyntaxErrorInJSON);
+// app.use(handleSyntaxErrorInJSON);
 
 app.post('/signin', login);
 app.post('/signup', createUser);
@@ -35,10 +36,13 @@ app.post('/signup', createUser);
 app.use('/users', auth, usersRoutes);
 app.use('/cards', auth, cardsRoutes);
 
-// handle 404
-app.all('*', (req, res) => {
-  res.status(404).send({ message: '404' });
-});
+// eslint-disable-next-line no-unused-vars
+app.use(handleErrors);
+
+// // handle 404
+// app.all('*', (req, res) => {
+//   res.status(404).send({ message: '404' });
+// });
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
