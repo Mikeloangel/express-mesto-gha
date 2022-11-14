@@ -6,6 +6,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { errors, Joi, celebrate } = require('celebrate');
 
 const { auth } = require('./middlewares/auth');
 const { handleErrors } = require('./middlewares/handleErrors');
@@ -29,14 +30,36 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // prevent crush on invalid incoming data
 // app.use(handleSyntaxErrorInJSON);
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post(
+  '/signin',
+  celebrate({
+    body : Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required(),
+    },)
+  }),
+  login);
+
+app.post(
+  '/signup',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(3),
+      name: Joi.string().min(2).max(20),
+      about: Joi.string().min(2).max(20),
+      avatar: Joi.string(),
+    }),
+  }),
+  createUser
+);
 
 // protected routes
 app.use('/users', auth, usersRoutes);
 app.use('/cards', auth, cardsRoutes);
 
-// eslint-disable-next-line no-unused-vars
+// error handling
+app.use(errors());
 app.use(handleErrors);
 
 // // handle 404
