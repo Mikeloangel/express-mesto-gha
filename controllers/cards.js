@@ -35,7 +35,7 @@ module.exports.deleteCard = (req, res, next) => {
   Cards.findOne({ _id: cardId })
     .orFail()
     .then((card) => {
-      if (card.owner._id !== user) {
+      if (card.owner.toString() !== user._id) {
         next(new ForbiddenError('нет доступа к этой карточке'));
         return;
       }
