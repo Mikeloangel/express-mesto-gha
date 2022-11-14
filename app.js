@@ -49,7 +49,13 @@ app.post(
       password: Joi.string().required().min(3),
       name: Joi.string().min(2).max(20),
       about: Joi.string().min(2).max(20),
-      avatar: Joi.string().uri(),
+      avatar: Joi.string().uri({
+        scheme: [
+          /https?/,
+        ],
+      })
+        .required()
+        .allow(''),
     }),
   }),
   createUser

@@ -13,7 +13,7 @@ router.post(
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).required(),
-      link: Joi.string().required().uri(),
+      link: Joi.string().required().uri({ scheme: [/https?/] }),
     }),
   }),
   addCard
