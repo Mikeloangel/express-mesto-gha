@@ -12,7 +12,7 @@ const cardSchema = mongoose.Schema({
     type: String,
     required: [true, 'Должен быть валидный адрес'],
     validate: {
-      validator: (v) => isURL(v),
+      validator: (v) => /(https?:\/\/)([a-z0-9/./_/-]*)()/gmi.test(v),
       message: (props) => `${props.value} неверный адрес!`,
     },
   },

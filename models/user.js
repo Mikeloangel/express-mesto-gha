@@ -4,6 +4,7 @@ const isURL = require('validator/lib/isURL');
 const bcrypt = require('bcryptjs');
 
 const ResourceNotFoundError = require('../errors/not-found-error');
+const UnauthorizedError = require('../errors/unauthorized-error');
 
 const userSchema = mongoose.Schema({
   email: {
@@ -48,13 +49,13 @@ userSchema.statics.findUserByCredentials = function ({ email, password }) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new ResourceNotFoundError('Неверные логин или пароль'));
+        return Promise.reject(new UnauthorizedError('неверные логин или пароль'))
       }
 
       return bcrypt.compare(password, user.password)
         .then((isMatched) => {
           if (!isMatched) {
-            return Promise.reject(new ResourceNotFoundError('Неверные логин или пароль'));
+            return Promise.reject(new UnauthorizedError('неверные логин или пароль'))
           }
           return Promise.resolve(user);
         });

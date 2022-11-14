@@ -15,6 +15,7 @@ const { handleErrors } = require('./middlewares/handleErrors');
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
+const ResourceNotFoundError = require('./errors/not-found-error');
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
@@ -48,7 +49,7 @@ app.post(
       password: Joi.string().required().min(3),
       name: Joi.string().min(2).max(20),
       about: Joi.string().min(2).max(20),
-      avatar: Joi.string(),
+      avatar: Joi.string().uri(),
     }),
   }),
   createUser
@@ -58,14 +59,14 @@ app.post(
 app.use('/users', auth, usersRoutes);
 app.use('/cards', auth, cardsRoutes);
 
+// handle 404
+app.all('*', (req, res, next) => {
+  next(new ResourceNotFoundError());
+});
+
 // error handling
 app.use(errors());
 app.use(handleErrors);
-
-// // handle 404
-// app.all('*', (req, res) => {
-//   res.status(404).send({ message: '404' });
-// });
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console

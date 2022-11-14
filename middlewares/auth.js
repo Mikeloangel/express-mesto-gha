@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const TokenError = require('../errors/token-error')
+const UnauthorizedError = require('../errors/unauthorized-error')
 
 module.exports.auth = (req, res, next) => {
   const { NODE_ENV, JWT_SECRET } = process.env;
@@ -9,6 +9,6 @@ module.exports.auth = (req, res, next) => {
     req.user = payload;
     next();
   } catch (e) {
-    next(new TokenError('Что-то не так с токеном'));
+    next(new UnauthorizedError('Что-то не так с токеном'));
   }
 };

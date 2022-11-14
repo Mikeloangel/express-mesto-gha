@@ -45,7 +45,10 @@ module.exports.createUser = (req, res, next) => {
     .then((hashedPassword) => User.create({
       name, about, avatar, email, password: hashedPassword,
     }))
-    .then((user) => res.status(201).send(user))
+    .then((user) => {
+      const {name, about, avatar, email, _id} = user;
+      res.status(201).send({name, about, avatar, email, _id});
+    })
     .catch((err) => {
       if (err.code === 11000) {
         next(new UserExistsError());

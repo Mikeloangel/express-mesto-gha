@@ -2,6 +2,7 @@ const Cards = require('../models/card');
 
 const WrongDataError = require('../errors/wrong-data-error');
 const ResourceNotFoundError = require('../errors/not-found-error');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 // get all cards
 module.exports.getCards = (req, res, next) => {
@@ -50,7 +51,7 @@ module.exports.deleteCard = (req, res, next) => {
         });
     })
     .catch((err) => {
-      next(new WrongDataError());
+      next(new ForbiddenError('нет доступа'))
     });
 };
 
