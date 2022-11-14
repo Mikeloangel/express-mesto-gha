@@ -16,7 +16,7 @@ router.post(
       link: Joi.string().required().uri({ scheme: [/https?/] }),
     }),
   }),
-  addCard
+  addCard,
 );
 
 router.delete(
@@ -26,7 +26,7 @@ router.delete(
       cardId: Joi.string().alphanum().length(24).required(),
     }),
   }),
-  deleteCard
+  deleteCard,
 );
 
 router.put(
@@ -36,7 +36,7 @@ router.put(
       cardId: Joi.string().alphanum().length(24).required(),
     }),
   }),
-  putLike
+  putLike,
 );
 
 router.delete(
@@ -46,7 +46,7 @@ router.delete(
       cardId: Joi.string().alphanum().length(24).required(),
     }),
   }),
-  deleteLike
+  deleteLike,
 );
 
 module.exports = router;

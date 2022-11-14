@@ -37,9 +37,10 @@ app.post(
     body: Joi.object().keys({
       email: Joi.string().required().email(),
       password: Joi.string().required(),
-    },)
+    }),
   }),
-  login);
+  login,
+);
 
 app.post(
   '/signup',
@@ -49,16 +50,10 @@ app.post(
       password: Joi.string().required().min(3),
       name: Joi.string().min(2).max(20),
       about: Joi.string().min(2).max(20),
-      avatar: Joi.string().uri({
-        scheme: [
-          /https?/,
-        ],
-      })
-        .required()
-        .allow(''),
+      avatar: Joi.string().uri({ scheme: [/https?/] }).allow(''),
     }),
   }),
-  createUser
+  createUser,
 );
 
 // protected routes

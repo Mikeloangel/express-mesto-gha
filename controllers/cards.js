@@ -2,7 +2,6 @@ const Cards = require('../models/card');
 
 const WrongDataError = require('../errors/wrong-data-error');
 const ResourceNotFoundError = require('../errors/not-found-error');
-const ForbiddenError = require('../errors/ForbiddenError');
 
 // get all cards
 module.exports.getCards = (req, res, next) => {
@@ -20,7 +19,7 @@ module.exports.addCard = (req, res, next) => {
     .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new WrongDataError())
+        next(new WrongDataError());
       } else {
         next(err);
       }
@@ -44,14 +43,14 @@ module.exports.deleteCard = (req, res, next) => {
           if (err.name === 'CastError') {
             next(new WrongDataError());
           } else if (err.name === 'DocumentNotFoundError') {
-            next(new ResourceNotFoundError())
+            next(new ResourceNotFoundError());
           } else {
             next(err);
           }
         });
     })
-    .catch((err) => {
-      next(new ForbiddenError('нет доступа'))
+    .catch(() => {
+      next(new ResourceNotFoundError());
     });
 };
 

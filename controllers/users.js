@@ -23,8 +23,8 @@ module.exports.getUserById = (req, res, next) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       const responceError = {
-        'CastError': new WrongDataError(),
-        'DocumentNotFoundError': new ResourceNotFoundError(),
+        CastError: new WrongDataError(),
+        DocumentNotFoundError: new ResourceNotFoundError(),
       };
 
       next(responceError[err.name] || err);
@@ -46,8 +46,13 @@ module.exports.createUser = (req, res, next) => {
       name, about, avatar, email, password: hashedPassword,
     }))
     .then((user) => {
-      const {name, about, avatar, email, _id} = user;
-      res.status(201).send({name, about, avatar, email, _id});
+      res.status(201).send({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      });
     })
     .catch((err) => {
       if (err.code === 11000) {

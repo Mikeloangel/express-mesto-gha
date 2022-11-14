@@ -15,9 +15,9 @@ router.get(
       userId: Joi.string().alphanum().length(24),
     }),
   }),
-  getUserById
-)
-  ;
+  getUserById,
+);
+
 router.patch(
   '/me',
   celebrate({
@@ -26,22 +26,17 @@ router.patch(
       about: Joi.string().min(2).max(30),
     }),
   }),
-  updateUserInfo
-)
-  ;
+  updateUserInfo,
+);
+
 router.patch(
   '/me/avatar',
   celebrate({
     body: Joi.object().keys({
-      avatar: Joi.string().uri({
-        scheme: [
-          /https?/,
-        ],
-      })
-        .required()
+      avatar: Joi.string().uri({ scheme: [/https?/] }).required(),
     }),
   }),
-  updateUserAvatar
+  updateUserAvatar,
 );
 
 module.exports = router;

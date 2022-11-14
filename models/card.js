@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const isURL = require('validator/lib/isURL');
 
 const cardSchema = mongoose.Schema({
   name: {
@@ -12,6 +11,7 @@ const cardSchema = mongoose.Schema({
     type: String,
     required: [true, 'Должен быть валидный адрес'],
     validate: {
+      // eslint-disable-next-line
       validator: (v) => /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/=]*)/gmi.test(v),
       message: (props) => `${props.value} неверный адрес!`,
     },
