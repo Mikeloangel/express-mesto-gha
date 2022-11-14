@@ -2,6 +2,7 @@ const Cards = require('../models/card');
 
 const WrongDataError = require('../errors/wrong-data-error');
 const ResourceNotFoundError = require('../errors/not-found-error');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 // get all cards
 module.exports.getCards = (req, res, next) => {
@@ -31,9 +32,13 @@ module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   const { user } = req;
 
-  Cards.findOne({ _id: cardId, owner: user })
+  Cards.findOne({ _id: cardId })
     .orFail()
-    .then(() => {
+    .then((card) => {
+      if (card.owner._id !== user) {
+        next(new ForbiddenError('нет доступа к этой карточке'));
+        return;
+      }
       Cards.deleteOne({ _id: cardId })
         .orFail()
         .then(() => {
