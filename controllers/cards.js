@@ -42,20 +42,18 @@ module.exports.deleteCard = (req, res, next) => {
       Cards.deleteOne({ _id: cardId })
         .orFail()
         .then(() => {
-          res.status(200).send({ message: 'ok' });
+          res.send({ message: 'ok' });
         })
-        .catch((err) => {
-          if (err.name === 'CastError') {
-            next(new WrongDataError());
-          } else if (err.name === 'DocumentNotFoundError') {
-            next(new ResourceNotFoundError());
-          } else {
-            next(err);
-          }
-        });
+        .catch(next);
     })
-    .catch(() => {
-      next(new ResourceNotFoundError());
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new WrongDataError());
+      } else if (err.name === 'DocumentNotFoundError') {
+        next(new ResourceNotFoundError());
+      } else {
+        next(err);
+      }
     });
 };
 
@@ -67,7 +65,7 @@ module.exports.putLike = (req, res, next) => {
   Cards.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
     .orFail()
     .then((updatedCard) => {
-      res.status(200).send(updatedCard);
+      res.send(updatedCard);
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
@@ -88,7 +86,7 @@ module.exports.deleteLike = (req, res, next) => {
   Cards.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
     .orFail()
     .then((updatedCard) => {
-      res.status(200).send(updatedCard);
+      res.send(updatedCard);
     })
     .catch((err) => {
       if (err.name === 'CastError') {

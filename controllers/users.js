@@ -10,7 +10,7 @@ const ResourceNotFoundError = require('../errors/not-found-error');
 // get all users from Db
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((users) => res.send(users))
     .catch(next);
 };
 
@@ -20,7 +20,7 @@ module.exports.getUserById = (req, res, next) => {
 
   User.findOne({ _id: userId })
     .orFail()
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.send(user))
     .catch((err) => {
       const responceError = {
         CastError: new WrongDataError(),
@@ -130,7 +130,7 @@ module.exports.getUserMe = (req, res, next) => {
   User.findById(req.user)
     .orFail()
     .then((user) => {
-      res.status(200).send(user);
+      res.send(user);
     })
     .catch(next);
 };
