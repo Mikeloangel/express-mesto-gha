@@ -120,6 +120,11 @@ module.exports.login = (req, res, next) => {
     });
 };
 
+module.exports.logout = (req, res) => {
+  res.clearCookie('jwt');
+  res.send({ message: 'До новых встреч!' });
+};
+
 // gets current user info
 module.exports.getUserMe = (req, res, next) => {
   User.findById(req.user)

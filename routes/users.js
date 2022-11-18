@@ -33,7 +33,8 @@ router.patch(
   '/me/avatar',
   celebrate({
     body: Joi.object().keys({
-      avatar: Joi.string().uri({ scheme: [/https?/] }).required(),
+      // eslint-disable-next-line
+      avatar: Joi.string().pattern(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/=]*)/).required(),
     }),
   }),
   updateUserAvatar,

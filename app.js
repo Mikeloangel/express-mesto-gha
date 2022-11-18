@@ -6,14 +6,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { errors, Joi, celebrate } = require('celebrate');
+const { errors } = require('celebrate');
 
 const { auth } = require('./middlewares/auth');
 const { handleErrors } = require('./middlewares/handleErrors');
 
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
-const { login, createUser } = require('./controllers/users');
+const indexRoutes = require('./routes/index');
 
 const ResourceNotFoundError = require('./errors/not-found-error');
 
@@ -28,35 +28,12 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// signin / signup routes
-app.post(
-  '/signin',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-    }),
-  }),
-  login,
-);
+app.use('/', indexRoutes);
 
-app.post(
-  '/signup',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required().min(3),
-      name: Joi.string().min(2).max(20),
-      about: Joi.string().min(2).max(20),
-      avatar: Joi.string().uri({ scheme: [/https?/] }).allow(''),
-    }),
-  }),
-  createUser,
-);
-
+app.use(auth);
 // protected routes
-app.use('/users', auth, usersRoutes);
-app.use('/cards', auth, cardsRoutes);
+app.use('/users', usersRoutes);
+app.use('/cards', cardsRoutes);
 
 // handle 404
 app.all('*', (req, res, next) => {
