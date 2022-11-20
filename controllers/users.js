@@ -120,6 +120,7 @@ module.exports.login = (req, res, next) => {
     });
 };
 
+// logout controller
 module.exports.logout = (req, res) => {
   res.clearCookie('jwt');
   res.send({ message: 'До новых встреч!' });

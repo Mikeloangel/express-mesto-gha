@@ -1,3 +1,10 @@
+// card routes
+// GET / get all cards
+// POST / creates new card {name, link}
+// DELETE /:cardId delete card
+// PUT /:cardId/likes add like to post
+// DELETE /:cardId/likes deletes like from post
+
 const router = require('express').Router();
 
 const { Joi, celebrate } = require('celebrate');

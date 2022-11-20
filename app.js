@@ -2,15 +2,18 @@ require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
 
+// libs
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 
+// middlewares
 const { auth } = require('./middlewares/auth');
 const { handleErrors } = require('./middlewares/handleErrors');
 
+// routes
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const indexRoutes = require('./routes/index');
@@ -28,6 +31,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// unprotected routes
 app.use('/', indexRoutes);
 
 app.use(auth);

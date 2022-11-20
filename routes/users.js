@@ -1,3 +1,10 @@
+// users routes
+// GET / get user list
+// GET /me get current user
+// GET /:userId get user by id
+// PATCH /me updates user info
+// PATCH /me/avatar updates avatar
+
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 
